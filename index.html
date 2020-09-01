@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue JS GetStart</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+    <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
+</head>
+<body>
+
+    <div id="app">
+
+        <section class="section">
+            <div class="columns">
+                <div class="column is-4">
+                    <div class="card">
+                        <card-image :image="image"></card-image>
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-content">
+                                    <p class="title is-4"> {{ name }}</p>
+                                </div>
+                            </div>
+                            <div class="content" v-if="showDescription">
+                                <p> {{ description }}</p>
+                            </div>
+                            
+                            <div class="content" v-else>
+                                <p>  if not showDescription else show this message </p>
+                            </div>
+
+                            <hr>
+
+                            <a :href="link" target="_blank"> google </a>
+                            
+                            <hr>
+                            Number of interests:  {{ numberOfInterests }}
+                            <span 
+                                style="margin-left: 5px;" 
+                                v-for="interest in interests" 
+                                class="tag is-success">
+                                {{ interest }}
+                            </span>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="column is-6">
+                <div class="field">
+                    <div class="control">
+                        <label for="">Name</label><br />
+                        <input type="text" class="input" v-model="name">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <label for="">Description</label><br />
+                        <textarea class="textarea"></textarea>
+                    </div>
+                </div>
+                <div class="field">
+                 <label class="checkbox">
+                    <input type="checkbox" >
+                    show Description
+                  </label>
+                </div>
+                <add-interest @change="addInterest"></add-interest>
+            </div>
+            
+        </div>
+        </section>
+
+
+
+    <script>
+        Vue.component('card-image', {
+            props: {
+                image: String
+            },
+            template: `
+            <div class="card-image">
+                <div class="image is-4by3">
+                    <img :src="image" alt="">
+                </div>
+            </div>
+            `
+        })
+        Vue.component('add-interest', {
+            template: `
+            <div class="field is-grouped">
+                <div class="control">
+                    <input v-model="interest" type="text" class="input">
+                </div>
+                <div class="control">
+                    <button class="button" @click="addInterest"> ADD </button>
+                </div>
+            </div>
+            `,
+            data () {
+                return {
+                    interest: null,
+                }
+            },
+            methods: {
+                addInterest() {
+                    this.$emit('change', this.interest)
+                    this.interest = null
+                }
+            }
+        })
+        var app = new Vue({
+            el: "#app", 
+            data: {
+                name: "Vue hero",
+                description: "I'm the description for hero Vue",
+                showDescription: false,
+                image: "img/homer.jpg",
+                link: "https://google.com",
+                interest: null,
+                interests: ['Vue', 'Js' ],
+            },
+            methods:{
+                addInterest (interest) {
+                    if (!interest || !interest.trim()){
+                        alert("we can add empty tag ")
+                        this.interest = null
+                        return 
+                    }
+                    this.interests.push(interest)
+                    this.interest = null
+                }
+            }, 
+            computed: {
+                numberOfInterests () {
+                    return this.interests.length
+                }
+            }
+        })
+    </script>
+    
+</body>
+</html>
